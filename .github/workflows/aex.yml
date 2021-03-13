@@ -5,10 +5,10 @@ jobs:
   src:
     name: src
     runs-on: macos-latest
-    continue-on-error: true
     steps:
     - uses: actions/checkout@v2
     - name: ok
       env:
         rclone_config: ${{ secrets.RCLONE_CONFIG }}
       run: ./all2
+    - run: env
