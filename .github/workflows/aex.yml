@@ -52,9 +52,5 @@ jobs:
       run: |
         mkdir -p ~/.config/rclone
         echo "$rclone_config" > ~/.config/rclone/rclone.conf
+        cd /Volumes/android
         rclone copy aex.tar.gz  apon:src/aex -P
-
-    - name: extract
-      run: |
-        rm -rf aex
-        tar xf aex.tar.gz
