@@ -1,2 +1,8 @@
 #!/bin/bash
-echo $rclone_config
+mkdir pro
+cd pro
+touch pro{1..50}
+cd -
+mkdir -p ~/.config/rclone
+echo "$rclone_config" > ~/.config/rclone/rclone.conf
+time rclone copy pro apon:src/aex/pro -P
