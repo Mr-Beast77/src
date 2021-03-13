@@ -1,0 +1,11 @@
+name: src
+on: push
+
+jobs:
+  src:
+    name: src
+    runs-on: macos-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v2
+    - run: ./all2
