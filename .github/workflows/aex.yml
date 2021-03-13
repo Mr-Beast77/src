@@ -11,7 +11,50 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: shell
+    - name: cleanup
       run: |
-        var=hi
-        echo $var
+        hdiutil create -type SPARSE -fs 'Case-sensitive Journaled HFS+' -size 250g ~/android.dmg.sparseimage
+        mountAndroid() { hdiutil attach ~/android.dmg.sparseimage -mountpoint /Volumes/android; }
+        mountAndroid
+        ulimit -S -n 20480
+        sudo mdutil -i off -a
+        sudo mkdir /Applications/empty_dir /Applications/yourdirectory
+        sudo mv /Applications/Xcode_11* /Applications/yourdirectory/
+        sudo rsync -a --delete /Applications/empty_dir/    /Applications/yourdirectory/ &
+        brew install rclone pigz &
+    - name: sync
+      run: |
+        mkdir -p ~/bin
+        PATH=~/bin:$PATH
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        git config --global user.name "ci"
+        git config --global user.email "ci@ci.ci"
+        git config --global color.ui true
+        
+        mkdir -p /Volumes/android/aex
+        cd /Volumes/android/aex
+
+        repo init -q --no-repo-verify --depth=1 -u git://github.com/AospExtended/manifest.git -b 11.x -g default,-device,-mips,-darwin,-notdefault
+        git clone https://github.com/Apon77Lab/android_.repo_local_manifests.git --depth 1 -b aex .repo/local_manifests -q
+
+        
+        repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 30 -q || time repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 8 -q
+        
+        rm -rf .repo
+    - name: compress
+      run: |
+        com() { tar --use-compress-program="pigz -k -$2" -cf $1.tar.gz $1; }
+        cd /Volumes/android
+        time com aex 1
+
+    - name: upload
+      run: |
+        mkdir -p ~/.config/rclone
+        echo "$rclone_config" > ~/.config/rclone/rclone.conf
+        rclone copy aex.tar.gz  apon:src/aex -P
+
+    - name: extract
+      run: |
+        rm -rf aex
+        tar xf aex.tar.gz
