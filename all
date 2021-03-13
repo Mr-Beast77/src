@@ -38,6 +38,3 @@ time com aex 1
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
 time rclone copy aex.tar.gz  apon:src/aex -P
-
-rm -rf aex
-time tar xf aex.tar.gz
