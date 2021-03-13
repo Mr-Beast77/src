@@ -3,12 +3,11 @@ on: push
 
 jobs:
   src:
-    name: src
+    name: aex
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: ok
+    - name: all
       env:
         rclone_config: ${{ secrets.RCLONE_CONFIG }}
-      run: ./all2
-    - run: env
+      run: ./all
