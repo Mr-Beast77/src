@@ -1,4 +1,5 @@
 #!/bin/bash
+brew install rclone
 mkdir pro
 cd pro
 touch pro{1..50}
