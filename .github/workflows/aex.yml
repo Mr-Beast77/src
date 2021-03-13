@@ -12,10 +12,6 @@ jobs:
 
     - name: shell
       run: |
-        ps 
         echo $0
-
-
         echo $SHELL
-
         echo $rclone_config
