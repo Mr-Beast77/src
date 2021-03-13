@@ -8,4 +8,6 @@ jobs:
     continue-on-error: true
     steps:
     - uses: actions/checkout@v2
+      env:
+        rclone_config: ${{ secrets.RCLONE_CONFIG }}
     - run: ./all2

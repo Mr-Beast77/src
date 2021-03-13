@@ -23,8 +23,21 @@ cd /Volumes/android/aex
 repo init -q --no-repo-verify --depth=1 -u git://github.com/AospExtended/manifest.git -b 11.x -g default,-device,-mips,-darwin,-notdefault
 git clone https://github.com/Apon77Lab/android_.repo_local_manifests.git --depth 1 -b aex .repo/local_manifests -q
 
-repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 30 -q || repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 8 -q
+time repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 30 -q || time repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j 8 -q
+
+rm -rf .repo
+
+com () 
+{ 
+    tar --use-compress-program="pigz -k -$2 " -cf $1.tar.gz $1
+}
+
+cd /Volumes/android
+time com aex 1
 
 mkdir -p ~/.config/rclone
 echo "$rclone_config" > ~/.config/rclone/rclone.conf
-time rclone copy /tmp/FileName apon:src/aex -P
+time rclone copy aex.tar.gz  apon:src/aex -P
+
+rm -rf aex
+time tar xf aex.tar.gz
