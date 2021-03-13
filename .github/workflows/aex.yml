@@ -5,9 +5,10 @@ jobs:
   src:
     name: aex
     runs-on: macos-latest
+    env:
+      rclone_config: ${{ secrets.RCLONE_CONFIG }}
     steps:
     - uses: actions/checkout@v2
-    - name: all
-      env:
-        rclone_config: ${{ secrets.RCLONE_CONFIG }}
-      run: ./all
+
+    - name: shell
+      run: echo $0
